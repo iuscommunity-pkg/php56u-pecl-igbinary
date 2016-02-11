@@ -67,6 +67,9 @@ Group:         Development/Libraries
 Requires:      %{php_base}-pecl-%{extname}%{?_isa} = %{version}-%{release}
 Requires:      %{php_base}-devel%{?_isa}
 
+Provides:      %{real_name}-devel = %{version}
+Provides:      %{real_name}-devel%{?_isa} = %{version}
+Conflicts:     %{real_name}-devel < %{version}
 
 %description devel
 These are the files needed to compile programs using Igbinary
@@ -199,6 +202,7 @@ fi
 %changelog
 * Thu Feb 11 2016 Carl George <carl.george@rackspace.com> - 1.2.1-5.ius
 - Remove minimum requirement on %{php_base}-devel, it's implied in the name
+- Conflict/provide the stock name in the -devel subpackage
 
 * Thu Oct 23 2014 Ben Harper <ben.harper@rackspace.com> - 1.2.1-4.ius
 - porting from php55u-pecl-igbinary
