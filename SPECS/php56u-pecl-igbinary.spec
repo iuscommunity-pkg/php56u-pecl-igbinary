@@ -16,14 +16,14 @@
 Summary:        Replacement for the standard PHP serializer
 Name:           %{php_base}-pecl-%{extname}
 Version:        1.2.1
-Release:        4.ius%{?dist}
+Release:        5.ius%{?dist}
 Source0:        http://pecl.php.net/get/%{extname}-%{version}.tgz
 Source1:        igbinary.ini
 License:        BSD
 Group:          System Environment/Libraries
 URL:            http://pecl.php.net/package/igbinary
 BuildRequires:  %{php_base}-pear
-BuildRequires:  %{php_base}-devel >= 5.2.0
+BuildRequires:  %{php_base}-devel
 # php-pecl-apcu-devel provides php-pecl-apc-devel
 BuildRequires:  %{php_base}-pecl-apcu-devel >= 3.1.7
 
@@ -197,6 +197,9 @@ fi
 
 
 %changelog
+* Thu Feb 11 2016 Carl George <carl.george@rackspace.com> - 1.2.1-5.ius
+- Remove minimum requirement on %{php_base}-devel, it's implied in the name
+
 * Thu Oct 23 2014 Ben Harper <ben.harper@rackspace.com> - 1.2.1-4.ius
 - porting from php55u-pecl-igbinary
 
