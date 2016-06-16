@@ -16,7 +16,7 @@
 Summary:        Replacement for the standard PHP serializer
 Name:           %{php_base}-pecl-%{extname}
 Version:        1.2.1
-Release:        5.ius%{?dist}
+Release:        6.ius%{?dist}
 Source0:        http://pecl.php.net/get/%{extname}-%{version}.tgz
 Source1:        igbinary.ini
 License:        BSD
@@ -46,11 +46,10 @@ Provides:       %{real_name} = %{version}
 Provides:       %{real_name}%{?_isa} = %{version}
 Conflicts:      %{real_name} < %{version}
 
-%if 0%{?fedora} < 20 && 0%{?rhel} < 7
-# Filter shared private
+# RPM 4.8
 %{?filter_provides_in: %filter_provides_in %{_libdir}/.*\.so$}
+%{?filter_provides_in: %filter_provides_in %{php_ztsextdir}/.*\.so$}
 %{?filter_setup}
-%endif
 
 
 %description
@@ -206,6 +205,9 @@ fi
 
 
 %changelog
+* Thu Jun 16 2016 Ben Harper <ben.harper@rackspace.com> - 1.2.1-6.ius
+- update filters to include zts
+
 * Thu Feb 11 2016 Carl George <carl.george@rackspace.com> - 1.2.1-5.ius
 - Remove minimum requirement on %{php_base}-devel, it's implied in the name
 - Conflict/provide the stock name in the -devel subpackage
