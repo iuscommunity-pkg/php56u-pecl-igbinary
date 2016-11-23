@@ -147,6 +147,9 @@ done
 
 
 %check
+# drop extension load from phpt
+sed -e '/^extension=/d' -i ?TS/tests/*phpt
+
 # APC required for test 045
 if [ -f %{php_extdir}/apcu.so ]; then
   MOD="-d extension=apcu.so"
@@ -219,6 +222,7 @@ fi
 - Latest upstream
 - Install package.xml as %%{extname}.xml, not %%{name}.xml
 - Clean up provides and conflicts
+- Drop extension load from phpt (Fedora)
 
 * Thu Jun 16 2016 Ben Harper <ben.harper@rackspace.com> - 1.2.1-6.ius
 - update filters to include zts
