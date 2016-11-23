@@ -118,7 +118,7 @@ make %{?_smp_mflags}
 %install
 make install -C NTS INSTALL_ROOT=%{buildroot}
 
-install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
+install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{extname}.xml
 
 install -D -m 644 %{SOURCE1} %{buildroot}%{php_inidir}/%{ini_name}
 
@@ -176,7 +176,7 @@ REPORT_EXIT_STATUS=1 \
 
 
 %post
-%{pecl_install} %{pecl_xmldir}/%{name}.xml >/dev/null || :
+%{pecl_install} %{pecl_xmldir}/%{extname}.xml >/dev/null || :
 
 
 %postun
@@ -189,7 +189,7 @@ fi
 %doc %{pecl_docdir}/%{extname}
 %config(noreplace) %{php_inidir}/%{ini_name}
 %{php_extdir}/%{extname}.so
-%{pecl_xmldir}/%{name}.xml
+%{pecl_xmldir}/%{extname}.xml
 
 %if %{with_zts}
 %config(noreplace) %{php_ztsinidir}/%{ini_name}
@@ -209,6 +209,7 @@ fi
 %changelog
 * Wed Nov 23 2016 Carl George <carl.george@rackspace.com> - 2.0.0-1.ius
 - Latest upstream
+- Install package.xml as %%{extname}.xml, not %%{name}.xml
 
 * Thu Jun 16 2016 Ben Harper <ben.harper@rackspace.com> - 1.2.1-6.ius
 - update filters to include zts
