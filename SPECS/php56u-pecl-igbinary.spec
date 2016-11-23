@@ -1,4 +1,6 @@
-# spec file for php-pecl-igbinary
+# IUS spec file for php56u-pecl-igbinary, forked from:
+#
+# Fedora spec file for php-pecl-igbinary
 #
 # Copyright (c) 2010-2014 Remi Collet
 # License: CC-BY-SA
