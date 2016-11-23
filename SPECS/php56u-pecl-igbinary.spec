@@ -12,7 +12,6 @@
 %global extname   igbinary
 %global with_zts  0%{?__ztsphp:1}
 %global ini_name  40-%{extname}.ini
-%global real_name php-pecl-%{extname}
 %global php_base php56u
 
 Summary:        Replacement for the standard PHP serializer
@@ -34,19 +33,24 @@ Requires(postun): %{php_base}-pear
 Requires:       %{php_base}(zend-abi) = %{php_zend_api}
 Requires:       %{php_base}(api) = %{php_core_api}
 
+# provide the stock name
+Provides:       php-pecl-%{extname} = %{version}
+Provides:       php-pecl-%{extname}%{?_isa} = %{version}
+
+# provide the stock and IUS names without pecl
 Provides:       php-%{extname} = %{version}
 Provides:       php-%{extname}%{?_isa} = %{version}
-Provides:       php-pecl(%{extname}) = %{version}
-Provides:       php-pecl(%{extname})%{?_isa} = %{version}
-
 Provides:       %{php_base}-%{extname} = %{version}
 Provides:       %{php_base}-%{extname}%{?_isa} = %{version}
+
+# provide the stock and IUS names in pecl() format
+Provides:       php-pecl(%{extname}) = %{version}
+Provides:       php-pecl(%{extname})%{?_isa} = %{version}
 Provides:       %{php_base}-pecl(%{extname}) = %{version}
 Provides:       %{php_base}-pecl(%{extname})%{?_isa} = %{version}
 
-Provides:       %{real_name} = %{version}
-Provides:       %{real_name}%{?_isa} = %{version}
-Conflicts:      %{real_name} < %{version}
+# conflict with the stock name
+Conflicts:      php-pecl-%{extname} < %{version}
 
 # RPM 4.8
 %{?filter_provides_in: %filter_provides_in %{_libdir}/.*\.so$}
@@ -69,14 +73,18 @@ Group:         Development/Libraries
 Requires:      %{php_base}-pecl-%{extname}%{?_isa} = %{version}-%{release}
 Requires:      %{php_base}-devel%{?_isa}
 
-Provides:      php-%{extname}-devel = %{version}-%{release}
-Provides:      php-%{extname}-devel%{?_isa} = %{version}-%{release}
-Provides:      %{php_base}-%{extname}-devel = %{version}-%{release}
-Provides:      %{php_base}-%{extname}-devel%{?_isa} = %{version}-%{release}
+# provide the stock name
+Provides:       php-pecl-%{extname}-devel = %{version}
+Provides:       php-pecl-%{extname}-devel%{?_isa} = %{version}
 
-Provides:      %{real_name}-devel = %{version}
-Provides:      %{real_name}-devel%{?_isa} = %{version}
-Conflicts:     %{real_name}-devel < %{version}
+# provide the stock and IUS names without pecl
+Provides:       php-%{extname}-devel = %{version}
+Provides:       php-%{extname}-devel%{?_isa} = %{version}
+Provides:       %{php_base}-%{extname}-devel = %{version}
+Provides:       %{php_base}-%{extname}-devel%{?_isa} = %{version}
+
+# conflict with the stock name
+Conflicts:      php-pecl-%{extname}-devel < %{version}
 
 %description devel
 These are the files needed to compile programs using Igbinary
@@ -210,6 +218,7 @@ fi
 * Wed Nov 23 2016 Carl George <carl.george@rackspace.com> - 2.0.0-1.ius
 - Latest upstream
 - Install package.xml as %%{extname}.xml, not %%{name}.xml
+- Clean up provides and conflicts
 
 * Thu Jun 16 2016 Ben Harper <ben.harper@rackspace.com> - 1.2.1-6.ius
 - update filters to include zts
