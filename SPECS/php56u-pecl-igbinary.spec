@@ -17,8 +17,8 @@
 
 Summary:        Replacement for the standard PHP serializer
 Name:           %{php_base}-pecl-%{extname}
-Version:        1.2.1
-Release:        6.ius%{?dist}
+Version:        2.0.0
+Release:        1.ius%{?dist}
 Source0:        http://pecl.php.net/get/%{extname}-%{version}.tgz
 Source1:        igbinary.ini
 License:        BSD
@@ -89,7 +89,7 @@ mv %{extname}-%{version} NTS
 cd NTS
 
 # Check version
-extver=$(sed -n '/#define PHP_IGBINARY_VERSION/{s/.* "//;s/".*$//;p}' igbinary.h)
+extver=$(sed -n '/#define PHP_IGBINARY_VERSION/{s/.* "//;s/".*$//;p}' src/php5/igbinary.h)
 if test "x${extver}" != "x%{version}%{?prever}"; then
    : Error: Upstream version is ${extver}, expecting %{version}%{?prever}.
    exit 1
@@ -118,7 +118,7 @@ make %{?_smp_mflags}
 %install
 make install -C NTS INSTALL_ROOT=%{buildroot}
 
-install -D -m 644 package2.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
+install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
 
 install -D -m 644 %{SOURCE1} %{buildroot}%{php_inidir}/%{ini_name}
 
@@ -130,10 +130,10 @@ install -D -m 644 %{SOURCE1} %{buildroot}%{php_ztsinidir}/%{ini_name}
 
 # Test & Documentation
 cd NTS
-for i in $(grep 'role="test"' ../package2.xml | sed -e 's/^.*name="//;s/".*$//')
+for i in $(grep 'role="test"' ../package.xml | sed -e 's/^.*name="//;s/".*$//')
 do install -Dpm 644 $i %{buildroot}%{pecl_testdir}/%{extname}/tests/$i
 done
-for i in $(grep 'role="doc"' ../package2.xml | sed -e 's/^.*name="//;s/".*$//')
+for i in $(grep 'role="doc"' ../package.xml | sed -e 's/^.*name="//;s/".*$//')
 do install -Dpm 644 $i %{buildroot}%{pecl_docdir}/%{extname}/$i
 done
 
@@ -207,6 +207,9 @@ fi
 
 
 %changelog
+* Wed Nov 23 2016 Carl George <carl.george@rackspace.com> - 2.0.0-1.ius
+- Latest upstream
+
 * Thu Jun 16 2016 Ben Harper <ben.harper@rackspace.com> - 1.2.1-6.ius
 - update filters to include zts
 
