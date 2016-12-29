@@ -16,7 +16,7 @@
 
 Summary:        Replacement for the standard PHP serializer
 Name:           %{php_base}-pecl-%{extname}
-Version:        2.0.0
+Version:        2.0.1
 Release:        1.ius%{?dist}
 Source0:        http://pecl.php.net/get/%{extname}-%{version}.tgz
 Source1:        igbinary.ini
@@ -221,6 +221,9 @@ fi
 
 
 %changelog
+* Thu Dec 29 2016 Carl George <carl.george@rackspace.com> - 2.0.1-1.ius
+- Latest upstream
+
 * Wed Nov 23 2016 Carl George <carl.george@rackspace.com> - 2.0.0-1.ius
 - Latest upstream
 - Install package.xml as %%{extname}.xml, not %%{name}.xml
