@@ -12,7 +12,7 @@
 %global extname   igbinary
 %global with_zts  0%{?__ztsphp:1}
 %global ini_name  40-%{extname}.ini
-%global php_base php56u
+%global php_base  php56u
 
 Summary:        Replacement for the standard PHP serializer
 Name:           %{php_base}-pecl-%{extname}
@@ -25,7 +25,6 @@ Group:          System Environment/Libraries
 URL:            http://pecl.php.net/package/igbinary
 BuildRequires:  %{php_base}-pear
 BuildRequires:  %{php_base}-devel
-# php-pecl-apcu-devel provides php-pecl-apc-devel
 BuildRequires:  %{php_base}-pecl-apcu-devel >= 3.1.7
 
 Requires(post): %{php_base}-pear
@@ -52,8 +51,7 @@ Provides:       %{php_base}-pecl(%{extname})%{?_isa} = %{version}
 # conflict with the stock name
 Conflicts:      php-pecl-%{extname} < %{version}
 
-# RPM 4.8
-%{?filter_provides_in: %filter_provides_in %{_libdir}/.*\.so$}
+%{?filter_provides_in: %filter_provides_in %{php_extdir}/.*\.so$}
 %{?filter_provides_in: %filter_provides_in %{php_ztsextdir}/.*\.so$}
 %{?filter_setup}
 
@@ -68,10 +66,10 @@ based storages for serialized data.
 
 
 %package devel
-Summary:       Igbinary developer files (header)
-Group:         Development/Libraries
-Requires:      %{php_base}-pecl-%{extname}%{?_isa} = %{version}-%{release}
-Requires:      %{php_base}-devel%{?_isa}
+Summary:        Igbinary developer files (header)
+Group:          Development/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{php_base}-devel%{?_isa}
 
 # provide the stock name
 Provides:       php-pecl-%{extname}-devel = %{version}
@@ -86,6 +84,7 @@ Provides:       %{php_base}-%{extname}-devel%{?_isa} = %{version}
 # conflict with the stock name
 Conflicts:      php-pecl-%{extname}-devel < %{version}
 
+
 %description devel
 These are the files needed to compile programs using Igbinary
 
@@ -94,7 +93,8 @@ These are the files needed to compile programs using Igbinary
 %setup -q -c
 
 mv %{extname}-%{version} NTS
-cd NTS
+
+pushd NTS
 
 # Check version
 extver=$(sed -n '/#define PHP_IGBINARY_VERSION/{s/.* "//;s/".*$//;p}' src/php5/igbinary.h)
@@ -102,7 +102,7 @@ if test "x${extver}" != "x%{version}%{?prever}"; then
    : Error: Upstream version is ${extver}, expecting %{version}%{?prever}.
    exit 1
 fi
-cd ..
+popd
 
 %if %{with_zts}
 cp -r NTS ZTS
@@ -110,16 +110,18 @@ cp -r NTS ZTS
 
 
 %build
-cd NTS
+pushd NTS
 %{_bindir}/phpize
 %configure --with-php-config=%{_bindir}/php-config
 make %{?_smp_mflags}
+popd
 
 %if %{with_zts}
-cd ../ZTS
+pushd ZTS
 %{_bindir}/zts-phpize
 %configure --with-php-config=%{_bindir}/zts-php-config
 make %{?_smp_mflags}
+popd
 %endif
 
 
@@ -137,13 +139,14 @@ install -D -m 644 %{SOURCE1} %{buildroot}%{php_ztsinidir}/%{ini_name}
 %endif
 
 # Test & Documentation
-cd NTS
+pushd NTS
 for i in $(grep 'role="test"' ../package.xml | sed -e 's/^.*name="//;s/".*$//')
 do install -Dpm 644 $i %{buildroot}%{pecl_testdir}/%{extname}/tests/$i
 done
 for i in $(grep 'role="doc"' ../package.xml | sed -e 's/^.*name="//;s/".*$//')
 do install -Dpm 644 $i %{buildroot}%{pecl_docdir}/%{extname}/$i
 done
+popd
 
 
 %check
@@ -153,22 +156,21 @@ sed -e '/^extension=/d' -i ?TS/tests/*phpt
 # APC required for test 045
 if [ -f %{php_extdir}/apcu.so ]; then
   MOD="-d extension=apcu.so"
-elif [ -f %{php_extdir}/apc.so ]; then
-  MOD="-d extension=apc.so"
 fi
 
 : simple NTS module load test, without APC, as optional
-%{_bindir}/php --no-php-ini \
+%{__php} --no-php-ini \
     --define extension=%{buildroot}%{php_extdir}/%{extname}.so \
     --modules | grep %{extname}
 
 : upstream test suite
-cd NTS
-TEST_PHP_EXECUTABLE=%{_bindir}/php \
+pushd NTS
+TEST_PHP_EXECUTABLE=%{__php} \
 TEST_PHP_ARGS="-n $MOD -d extension=$PWD/modules/%{extname}.so" \
 NO_INTERACTION=1 \
 REPORT_EXIT_STATUS=1 \
-%{_bindir}/php -n run-tests.php --show-diff
+%{__php} -n run-tests.php --show-diff
+popd
 
 %if %{with_zts}
 : simple ZTS module load test, without APC, as optional
@@ -177,12 +179,13 @@ REPORT_EXIT_STATUS=1 \
     --modules | grep %{extname}
 
 : upstream test suite
-cd ../ZTS
+pushd ZTS
 TEST_PHP_EXECUTABLE=%{__ztsphp} \
 TEST_PHP_ARGS="-n $MOD -d extension=$PWD/modules/%{extname}.so" \
 NO_INTERACTION=1 \
 REPORT_EXIT_STATUS=1 \
 %{__ztsphp} -n run-tests.php --show-diff
+popd
 %endif
 
 
@@ -191,7 +194,7 @@ REPORT_EXIT_STATUS=1 \
 
 
 %postun
-if [ $1 -eq 0 ] ; then
+if [ $1 -eq 0 ]; then
     %{pecl_uninstall} %{extname} >/dev/null || :
 fi
 
