@@ -94,6 +94,8 @@ These are the files needed to compile programs using Igbinary
 
 mv %{extname}-%{version} NTS
 
+sed -e '/COPYING/s/role="doc"/role="src"/' -i package.xml
+
 pushd NTS
 
 # Check version
@@ -200,6 +202,7 @@ fi
 
 
 %files
+%license NTS/COPYING
 %doc %{pecl_docdir}/%{extname}
 %config(noreplace) %{php_inidir}/%{ini_name}
 %{php_extdir}/%{extname}.so
@@ -223,6 +226,7 @@ fi
 %changelog
 * Thu Dec 29 2016 Carl George <carl.george@rackspace.com> - 2.0.1-1.ius
 - Latest upstream
+- Install license properly
 
 * Wed Nov 23 2016 Carl George <carl.george@rackspace.com> - 2.0.0-1.ius
 - Latest upstream
