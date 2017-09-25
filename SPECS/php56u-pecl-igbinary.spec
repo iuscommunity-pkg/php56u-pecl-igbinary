@@ -16,7 +16,7 @@
 
 Summary:        Replacement for the standard PHP serializer
 Name:           %{php_base}-pecl-%{extname}
-Version:        2.0.1
+Version:        2.0.4
 Release:        1.ius%{?dist}
 Source0:        http://pecl.php.net/get/%{extname}-%{version}.tgz
 Source1:        igbinary.ini
@@ -224,6 +224,9 @@ fi
 
 
 %changelog
+* Mon Sep 25 2017 Ben Harper <ben.harper@rackspace.com> - 2.0.4-1.ius
+- Latest upstream
+
 * Thu Dec 29 2016 Carl George <carl.george@rackspace.com> - 2.0.1-1.ius
 - Latest upstream
 - Install license properly
